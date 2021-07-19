@@ -26,7 +26,7 @@ int main()
 	loadimage(&miniMap, BACKGROUND_PATH, miniWidth, miniHeight);
 	loadimage(&background, BACKGROUND_PATH, width, height);
 
-	Actor* pActor = new Actor(width, height, miniWidth, miniHeight, 740, 605);
+	Actor* pActor = new Actor(width, height, miniWidth, miniHeight, 1000, 605);
 	pActor->setMiniMap(miniMap);
 	pActor->setBackground(background);
 

@@ -142,14 +142,19 @@ void MoveActor::drawScene(int width, int height, int miniWidth, int miniHeight, 
 		}
 
 		BeginBatchDraw();
+		//cleardevice();
 		putimage(0, 0, width, height, &background, 0, 0);
 
-		for (int j = 0; j < 5; j++)
+		for (int j = 0, y = 0; j < 5; j++)
 		{
-			for (int i = 0; i < 5; i++)
+			y += *(imgGridW + j * 5);
+
+			for (int i = 0, x = 40; i < 5; i++)
 			{
-				putimage(i * 140, j * 160, 130, 150, &mask, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCAND);
-				putimage(i * 140, j * 160, 130, 150, &avatar, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCINVERT);
+				rectangle(x, y, x + 130, y + *(imgGridZ + j * 5));
+				putimage(x, y, 130, *(imgGridZ + j * 5), &mask, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCAND);
+				putimage(x, y, 130, *(imgGridZ + j * 5), &avatar, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCINVERT);
+				x += 140;
 			}
 		}
 
