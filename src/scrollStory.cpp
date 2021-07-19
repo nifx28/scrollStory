@@ -17,7 +17,7 @@ int main()
 	if (hWnd)
 	{
 		wostringstream woss;
-		woss << L"EasyX 遊戲開發 (" << width << L"x" << height << L")";
+		woss << L"EasyX 遊戲開發 (" << width << L" x " << height << L")";
 		//SetConsoleTitle(woss.str().data());
 		SetWindowText(hWnd, woss.str().data());
 	}

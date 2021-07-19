@@ -144,9 +144,9 @@ void MoveActor::drawScene(int width, int height, int miniWidth, int miniHeight, 
 		BeginBatchDraw();
 		putimage(0, 0, width, height, &background, 0, 0);
 
-		for (int j = 0; j < 4; j++)
+		for (int j = 0; j < 5; j++)
 		{
-			for (int i = 0; i < 7; i++)
+			for (int i = 0; i < 5; i++)
 			{
 				putimage(i * 140, j * 160, 130, 150, &mask, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCAND);
 				putimage(i * 140, j * 160, 130, 150, &avatar, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCINVERT);
