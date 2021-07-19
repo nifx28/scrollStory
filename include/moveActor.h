@@ -20,7 +20,7 @@ protected:
 
 	bool isJumping, isFalling;
 
-	IMAGE avatar;
+	IMAGE avatar, mask;
 	IMAGE mkIMG[2];
 	IMAGE bkIMG[2];
 

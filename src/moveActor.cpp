@@ -19,120 +19,41 @@ MoveActor::MoveActor(int maxFrameNum, const wchar_t* mkIMGURL[], const wchar_t* 
 	DWORD* mkBUF = nullptr, * bkBUF = nullptr;
 	mkBUF = GetImageBuffer(&avatar);
 
-	HDC hDC = nullptr;
-	hDC = GetImageHDC();
-	HICON hIcon = nullptr;
-
-	if (hDC)
-	{
-		hIcon = reinterpret_cast<HICON>(LoadImage(GetModuleHandle(nullptr), MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 0, 0, LR_LOADTRANSPARENT));
-	}
-
-	HDC memDC = nullptr;
-
-	if (hIcon)
-	{
-		memDC = CreateCompatibleDC(nullptr);
-	}
-
-	ICONINFO iconInfo = {};
-
-	if (memDC)
-	{
-		GetIconInfo(hIcon, &iconInfo);
-	}
-	else
-	{
-		return;
-	}
-
-	HBITMAP hBitmap = nullptr;
-	hBitmap = iconInfo.hbmColor;
-
-	BITMAP bmp = {};
-	BITMAPINFOHEADER bmpInfo = {};
-	GetObject(hBitmap, sizeof(BITMAP), &bmp);
-
-	bmpInfo.biSize = sizeof(BITMAPINFOHEADER);
-	bmpInfo.biWidth = bmp.bmWidth;
-	bmpInfo.biHeight = bmp.bmHeight;
-	bmpInfo.biPlanes = bmp.bmPlanes;
-	bmpInfo.biBitCount = bmp.bmBitsPixel;
-	bmpInfo.biCompression = BI_RGB;
-	bmpInfo.biSizeImage = ((bmp.bmWidth * bmp.bmBitsPixel + 31) / 32) * 4 * bmp.bmHeight;
-	bmpInfo.biClrImportant = 0;
-
-	LPBYTE lpBits = nullptr;
-	lpBits = reinterpret_cast<LPBYTE>(GlobalAlloc(GMEM_FIXED, bmpInfo.biSizeImage));
-
-	if (!lpBits)
-	{
-		return;
-	}
-
-	GetDIBits(memDC, hBitmap, 0, bmp.bmHeight, lpBits, reinterpret_cast<BITMAPINFO*>(&bmpInfo), DIB_RGB_COLORS);
-
-	IMAGE bkIMG(bmp.bmWidth, bmp.bmHeight);
-	bkBUF = GetImageBuffer(&bkIMG);
-	map<BYTE, int> m;
+	mask = IMAGE(833, 1345);
+	bkBUF = GetImageBuffer(&mask);
+	map<DWORD, int> m;
 
 	wofstream ofs(L"Mask.log");
-	ofs << L"hIcon: " << (hIcon ? L'Y' : L'N') << L'\n';
-	ofs << bmp.bmWidth << L" x " << bmp.bmHeight << L" = " << bmp.bmPlanes << L", " << bmp.bmBitsPixel << L'\n';
-	ofs << L"biSizeImage: " << bmpInfo.biSizeImage << L'\n';
-	ofs << L"lpBits: " << (lpBits ? L'Y' : L'N') << L'\n';
 
-	for (int i = 0; i < bmpInfo.biSizeImage; i += 4)
+	for (int i = 0; i < mask.getwidth() * mask.getheight(); i++)
 	{
-		/*if (m.find(lpBits[i]) == m.end())
+		if (m.find(mkBUF[i]) == m.end())
 		{
-			m[lpBits[i]] = 1;
+			m[mkBUF[i]] = 1;
 		}
 		else
 		{
-			m[lpBits[i]] += 1;
+			m[mkBUF[i]] += 1;
 		}
 
-		if ((lpBits[i] & 0xFF000000) != 0xFF000000)
+		if ((mkBUF[i] & 0xFF000000) != 0xFF000000)
+		{
+			mkBUF[i] = BLACK;
+			bkBUF[i] = WHITE;
+		}
+		else
 		{
 			bkBUF[i] = BLACK;
 		}
-		else
-		{
-			bkBUF[i] = WHITE;
-		}*/
 	}
 
-	if (lpBits)
-	{
-		GlobalFree(lpBits);
-		lpBits = nullptr;
-	}
-
-	if (hIcon)
-	{
-		DestroyIcon(hIcon);
-		hIcon = nullptr;
-	}
-
-	if (memDC)
-	{
-		DeleteDC(memDC);
-		memDC = nullptr;
-	}
-
-	if (hDC)
-	{
-		hDC = nullptr;
-	}
-
-	vector<pair<BYTE, int>> list;
+	vector<pair<DWORD, int>> list;
 
 	for (const auto& it : m) {
 		list.push_back(it);
 	}
 
-	sort(list.begin(), list.end(), [](const pair<BYTE, int>& a, const pair<BYTE, int>& b) {
+	sort(list.begin(), list.end(), [](const pair<DWORD, int>& a, const pair<DWORD, int>& b) {
 		return a.second > b.second;
 	});
 
@@ -142,7 +63,8 @@ MoveActor::MoveActor(int maxFrameNum, const wchar_t* mkIMGURL[], const wchar_t* 
 	}
 
 	ofs.close();
-	saveimage(L"Mask.png", &bkIMG);
+	saveimage(L"Avatar.png", &avatar);
+	saveimage(L"Mask.png", &mask);
 }
 
 void MoveActor::setGroundZero(int y)
@@ -226,11 +148,14 @@ void MoveActor::drawScene(int width, int height, int miniWidth, int miniHeight, 
 		{
 			for (int i = 0; i < 7; i++)
 			{
-				putimage(i * 140, j * 160, 130, 150, &avatar, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i));
+				putimage(i * 140, j * 160, 130, 150, &mask, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCAND);
+				putimage(i * 140, j * 160, 130, 150, &avatar, *(imgGridX + j * 5 + i), *(imgGridY + j * 5 + i), SRCINVERT);
 			}
 		}
 
 		putimage(width - miniWidth - 10, 10, &miniMap);
+		//putimage(140, 160, 130, 150, &mask, 408, 127, SRCAND);
+		//putimage(140, 160, 130, 150, &avatar, 408, 127, SRCINVERT);
 		putimage(x, y, 50, 80, bkIMG + moveDir, frame * 50, 0, SRCAND);
 		putimage(x, y, 50, 80, mkIMG + moveDir, frame * 50, 0, SRCPAINT);
 		frame++;

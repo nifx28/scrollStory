@@ -366,5 +366,6 @@ FodyWeavers.xsd
 /res/RC*
 
 # Mask experiments
+/Avatar.png
 /Mask.png
 /Mask.log
