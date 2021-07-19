@@ -1,4 +1,4 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "scrollStory.h"
 #include "actor.h"
 #include "moveActor.h"
@@ -17,7 +17,7 @@ int main()
 	if (hWnd)
 	{
 		wostringstream woss;
-		woss << L"EasyX ¹CÀ¸¶}µo (" << width << L" x " << height << L")";
+		woss << L"EasyX éŠæˆ²é–‹ç™¼ (" << width << L" x " << height << L")";
 		//SetConsoleTitle(woss.str().data());
 		SetWindowText(hWnd, woss.str().data());
 	}
