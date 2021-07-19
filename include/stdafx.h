@@ -14,3 +14,5 @@
 #include <Windows.h>
 
 #include <conio.h>
+
+#include "resource.h"

@@ -3,6 +3,8 @@
 #include "actorBehavior.h"
 #include "actor.h"
 
+#define AVATAR_TILE_PATH	L"assets\\avatars\\pnghut_maplestory-2-video-game-sprite-monster-inc.png"
+
 class MoveActor : public ActorBehavior
 {
 public:
